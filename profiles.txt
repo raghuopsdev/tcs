@@ -1,0 +1,112 @@
+======================================================
+modules/profile/manifests/webserver.pp
+======================================================
+class profile::webserver (
+  Integer $port = 80,
+  String  $document_root = '/var/www/html',
+) {
+  # Example configuration using parameters
+  file { 'webserver_config':
+    path    => '/etc/webserver/config',
+    content => epp('profile/webserver_config.epp'),
+  }
+
+  service { 'webserver':
+    ensure => running,
+    enable => true,
+  }
+}
+
+=======================================================
+
+modules/profile/templates/webserver_config.epp
+=======================================================
+
+
+# Webserver configuration file
+port <%= $port %>
+document_root <%= $document_root %>
+
+
+
+
+=========================================================
+modules/profile/manifests/database.pp
+=========================================================
+
+class profile::database (
+  String $db_user = 'admin',
+  String $db_password = 'password',
+) {
+  # Example configuration using parameters
+  file { 'database_config':
+    path    => '/etc/database/config',
+    content => epp('profile/database_config.epp'),
+  }
+
+  service { 'database':
+    ensure => running,
+    enable => true,
+  }
+}
+
+==============================================================
+
+modules/profile/templates/database_config.epp
+
+==============================================================
+
+# Database configuration file
+user <%= $db_user %>
+password <%= $db_password %>
+
+
+ROLES
+
+==========================================================================================
+modules/role/manifests/webserver.pp
+==========================================================================================
+
+
+class role::webserver {
+  include profile::webserver
+}
+
+
+=========================================================================================
+modules/role/manifests/database.pp
+=========================================================================================
+
+class role::database {
+  include profile::database
+}
+
+
+======================================================================
+
+
+
+main manifesto
+
+/manifests/site.pp
+
+===========================================================
+node 'webserver.example.com' {
+  include role::webserver
+}
+
+node 'database.example.com' {
+  include role::database
+}
+===========================================================
+
+
+ROLE -> PROFILES -> MODULES -> CLASSES
+
+===========================================================
+
+
+
+
+
+

@@ -1,0 +1,28 @@
+Define a class called apache with a version parameters that uses latest version of Apache. Create an instance of this class that uses Apache 2.2 instead of the latest, all others being same
+
+
+
+
+
+class apache (
+  String $version = 'latest',
+  String $package_name = 'httpd',
+  String $service_name = 'httpd',
+  String $config_file  = '/etc/httpd/conf/httpd.conf',
+) {
+  package { $package_name:
+    ensure => $version,
+  }
+
+  file { $config_file:
+    ensure  => file,
+    content => template('apache/httpd.conf.erb'),
+    require => Package[$package_name],
+  }
+
+  service { $service_name:
+    ensure     => running,
+    enable     => true,
+    require    => File[$config_file],
+  }
+}

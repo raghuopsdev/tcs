@@ -1,0 +1,73 @@
+2.1. Principles of Puppet Design
+Scalability
+Maintainability
+Efficiency
+2.2. Best Practices
+Modularization
+Separation of Concerns
+Abstraction
+Example: Designing a Puppet module for a web server
+Roles and Profiles
+
+3.1. Understanding Roles and Profiles
+Definition and Purpose
+How They Work Together
+3.2. Creating Profiles
+Profile for Web Server
+Profile for Database Server
+3.3. Creating Roles
+Role for Application Server
+Role for Database Server
+Example: Implementing roles and profiles for a LAMP stack
+Role Modelling
+
+4.1. Role Modelling Concepts
+Role Definition
+Node Classification
+4.2. Defining Roles and Assigning Profiles
+Creating a Role for a Web Application
+Using Hiera for Role Assignment
+Example: Role modeling for a multi-tier application setup
+Puppet Abstraction
+
+5.1. Understanding Abstraction
+Defined Types
+Classes and Modules
+5.2. Using Templates
+ERB Templates
+EPP Templates
+Example: Creating a module with defined types and templates
+Resource Containment
+
+6.1. Principles of Resource Containment
+Scope Management
+Dependency Handling
+6.2. Implementing Containment
+Using Class Containment
+Managing Dependencies
+Example: Configuring a service with contained resources
+Anchor Pattern
+
+7.1. Overview of the Anchor Pattern
+Purpose and Benefits
+How It Works
+7.2. Implementing the Anchor Pattern
+Defining Anchor Classes
+Ordering Resources
+Example: Using the anchor pattern to manage a complex service deployment
+Hands-On Exercises
+
+8.1. Exercise 1: Designing a Modular Puppet Configuration
+8.2. Exercise 2: Implementing Roles and Profiles for a Web Application
+8.3. Exercise 3: Creating and Using Defined Types for Abstraction
+8.4. Exercise 4: Applying Resource Containment to a Database Setup
+8.5. Exercise 5: Utilizing the Anchor Pattern for a Multi-Service Environment
+Summary and Best Practices
+
+Review of Key Concepts
+Common Pitfalls and How to Avoid Them
+Further Reading and Resources
+
+Official Puppet Documentation
+Recommended Books and Articles
+Online Communities and Forums

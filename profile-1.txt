@@ -1,0 +1,60 @@
+node 'webserver' {
+include profile::nginx
+}
+
+node 'appserver' {
+include profile::appserver
+include profile::appserver::tcs {
+  user => bipin
+}
+
+
+}
+
+============================================================
+
+
+===========================================================
+
+class profile::appserver {
+  # Include the nginx profile
+  include profile::nginx
+
+  # Ensure the Tomcat service is installed and running
+  class { 'tomcat':
+    version   => '9.0',
+    ensure    => present,
+    manage_service => true,
+  }
+
+  # Configure Tomcat server
+  tomcat::instance { 'tomcat_instance':
+    ensure       => present,
+    install_from => 'package',  # Can be 'source' if building from source
+    package_name => 'tomcat9',  # Adjust according to the package available
+    service_name => 'tomcat9',  # Adjust according to the service name
+    port         => 8080,
+    stop_timeout => '30s',
+  }
+
+  # Optional: Configure a default web application
+  tomcat::war { 'example_app':
+    ensure   => present,
+    source   => 'puppet:///modules/profile/files/example_app.war',  # Adjust path as needed
+    instance => 'tomcat_instance',
+  }
+
+  # Example: Configure Nginx to reverse proxy to Tomcat
+  nginx::resource::server { 'appserver.example.com':
+    listen_port => 80,
+    server_name => 'appserver.example.com',
+    root        => '/usr/share/nginx/html',
+    location    => [
+      {
+        path   => '/',
+        proxy  => 'http://localhost:8080',
+      }
+    ],
+    ensure     => present,
+  }
+}

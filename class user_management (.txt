@@ -1,0 +1,34 @@
+class user_management (
+  String $username,
+  Integer $uid,
+  Optional[String] $home_directory = undef,
+  Array[String] $groups,
+  String $shell = '/bin/bash',
+) {
+  # If no home_directory is provided, default to /home/username
+  $home_dir = $home_directory ? {
+    undef   => "/home/${username}",
+    default => $home_directory,
+  }
+
+  # Create the user account
+  user { $username:
+    ensure     => present,
+    uid        => $uid,
+    home       => $home_dir,
+    shell      => $shell,
+    managehome => true,
+  }
+
+  # Assign the user to the specified groups
+  $groups.each |String $group| {
+    group { $group:
+      ensure => present,
+    }
+
+    user { $username:
+      groups => $group,
+      require => Group[$group],
+    }
+  }
+}

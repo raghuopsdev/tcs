@@ -1,0 +1,22 @@
+Create a Puppet class called user_management that manages user accounts on a system. The class should accept the following parameters:
+
+
+username: The name of the user account to be created (must be a String).
+uid: The user ID (UID) for the account (must be an Integer).
+home_directory: The home directory for the user (must be an Optional[String]).
+groups: A list of groups that the user should be a member of (must be an Array[String]).
+shell: The default shell for the user (must be a String with a default value of '/bin/bash')
+
+
+
+The class should validate the data types of these parameters and then create the user account using the user resource. If the home_directory is not provided, it should default to /home/username.
+
+Example Input:
+---------------------
+username: 'john_doe'
+uid: 1001
+home_directory: '/custom/home/john_doe'
+groups: ['wheel', 'devops']
+shell: '/bin/zsh'
+
+

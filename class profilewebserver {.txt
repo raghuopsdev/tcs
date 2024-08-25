@@ -1,0 +1,118 @@
+class profile::webserver {
+  # Contained resources
+  package { 'nginx':
+    ensure => installed,
+  }
+
+  file { '/etc/nginx/nginx.conf':
+    ensure  => file,
+    content => 'server { listen 80; }',
+    notify  => Service['nginx'],
+  }
+
+  service { 'nginx':
+    ensure => running,
+    enable => true,
+  }
+}
+
+
+==============================
+
+class role::webapp_server {
+  include profile::webserver
+  # Other resources or classes
+}
+
+==================================================================
+
+class profile::webserver {
+  # Resources in the container
+  contain('nginx::package', 'nginx::config', 'nginx::service')
+
+  class { 'nginx::package':
+    ensure => installed,
+  }
+
+  class { 'nginx::config':
+    content => 'server { listen 80; }',
+    notify  => Class['nginx::service'],
+  }
+
+  class { 'nginx::service':
+    ensure => running,
+    enable => true,
+  }
+}
+
+=======================================================================
+
+
+class profile::webserver {
+  # Define the anchor
+  anchor { 'webserver::start':
+    before => [
+      Class['profile::webserver::service'],
+    ],
+  }
+
+  # Package resource
+  package { 'nginx':
+    ensure => installed,
+  }
+
+  # Configuration file
+  file { '/etc/nginx/nginx.conf':
+    ensure  => file,
+    content => 'server { listen 80; }',
+    notify  => Anchor['webserver::end'],
+  }
+
+  # Service resource
+  class { 'profile::webserver::service':
+    ensure => running,
+    enable => true,
+  }
+
+  # Define the end anchor
+  anchor { 'webserver::end':
+    require => [
+      Package['nginx'],
+      File['/etc/nginx/nginx.conf'],
+    ],
+  }
+}
+
+=====================================================================
+
+
+class profile::webserver {
+  # Start anchor
+  anchor { 'webserver::begin':
+    before => [
+      Class['profile::webserver::install'],
+    ],
+  }
+
+  # Installation class
+  class { 'profile::webserver::install':
+    before => Anchor['webserver::config'],
+  }
+
+  # Configuration class
+  class { 'profile::webserver::config':
+    require => Anchor['webserver::begin'],
+    notify  => Anchor['webserver::end'],
+  }
+
+  # End anchor
+  anchor { 'webserver::end':
+    require => [
+      Class['profile::webserver::install'],
+      Class['profile::webserver::config'],
+    ],
+  }
+}
+
+
+
