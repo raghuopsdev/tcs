@@ -1,0 +1,110 @@
+Custom Facts, 
+
+	What is Fact ?
+
+		In Puppet, a "fact" is a piece of information about a system or node that Puppet uses to make decisions during the 			configuration process.
+
+	What is Custom Facts ?
+
+		Custom Facts: User-defined facts created to provide additional information specific to your environment.
+
+
+Fact precedence, 
+	Order of preference
+		The general order of precedence is:
+			Custom Facts (highes precedence): Defined in Puppet modules or as custom Ruby facts.
+			External Facts(second precedence): Provided by external scripts or tools.
+				JSON, YAML, SH & PuppetDB.
+			Built-in Facts: Provided by Facter’s core functionality.
+				Default
+			Fallback Facts: Default system facts if no other facts are available.
+				Default Facts.
+
+
+Puppet Development Workflow,
+	
+	Git - Version Control
+		git init
+		   environment (production/dev/qa)
+	Unit Testing
+		Vagrant
+		Docker
+			Install docker
+			Install docker-compose
+			Readymade images available in Docker Hub both master & agent of puppet.
+			docker-compose
+				(Multi container deployment tool)
+				Copy the manifesto/module copy that build your own image and test the Manifesto.
+		RSec-Puppet
+
+
+Invocation on Client
+
+
+	sudo systemctl enable puppet
+	
+	Manually - sudo puppet agent -t
+
+	crontab -e
+		(15 , 30 ------ puppet agent -t...)
+	
+	Invocation:
+		Gathering Facts (facter) 
+		Request Catalog from Puppet Master
+		Master
+			Complie catalog
+			Send the Catalog to the agent
+		Apply Catalog
+		Report the status to Master
+	
+		Puppet Agent Log - sudo tail -f /var/log/puppet/puppet/puppet.log
+
+		Puppet Agent Configuration File - /etc/puppet/puppet/puppet.conf
+			[main]
+				certname = agent.example.com
+				server = puppetmaster.example.com
+				environment = production
+				runinterval = 30m
+
+			[agent]
+				pluginsync = true
+
+		DEBUG
+			sudo puppet agent -t --debug
+
+		Agent Log Location
+
+			/var/log/puppet/puppet/puppet.log
+
+		Master Log Location
+		
+			/var/log/puppet/puppetserver/puppetserver.log
+
+		
+
+Mcollective
+
+		"Marionette Collective"
+		It is a framework that facilitates orchestration and management of distributed systems. It allows administrators to 		execute commands, gather information, and manage multiple servers from a central location. Originally developed by 		Puppet Labs
+
+
+		Mcollective with Puppet
+
+		Orchestration: Execute commands or perform actions across multiple nodes simultaneously.
+		Management: Collect information from multiple nodes and manage configurations.
+		Scalability: Handle large-scale deployments efficiently.
+
+
+
+
+//TODO
+
+Mcollective Client and Server Configuration, 
+Data Caching, 
+Processing Hooks, 
+Agent Configuration and Activation
+
+// RSec-Puppet
+// PDK Demonstration
+// Creating the functions (We only executed)
+
