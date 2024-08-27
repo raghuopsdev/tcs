@@ -1,0 +1,59 @@
+# File: modules/nginx/manifests/init.pp
+class nginx {
+  package { 'nginx':
+    ensure => installed,
+  }
+
+  file { '/etc/nginx/nginx.conf':
+    ensure  => file,
+    source  => 'puppet:///modules/nginx/nginx.conf',
+    notify  => Service['nginx'],
+  }
+
+  service { 'nginx':
+    ensure    => running,
+    enable    => true,
+    subscribe => File['/etc/nginx/nginx.conf'],
+  }
+}
+
+
+// bolt command
+
+bolt command run 'systemctl restart nginx' --targets web_node
+
+//using exec to restart
+
+# File: modules/nginx/manifests/init.pp
+class nginx {
+  # Install the Nginx package
+  package { 'nginx':
+    ensure => installed,
+  }
+
+  # Manage the Nginx configuration file
+  file { '/etc/nginx/nginx.conf':
+    ensure  => file,
+    source  => 'puppet:///modules/nginx/nginx.conf',
+    notify  => Exec['restart-nginx'], # Notify the exec resource on changes
+  }
+
+  # Define an exec resource to restart Nginx
+  exec { 'restart-nginx':
+    command     => '/bin/systemctl restart nginx', # Command to restart Nginx
+    path        => ['/bin', '/usr/bin'], # Ensure the command path is set
+    refreshonly => true, # Only run if notified
+    subscribe   => File['/etc/nginx/nginx.conf'], # Run if the config file changes
+  }
+
+  # Manage the Nginx service (optional, if not handled by exec)
+  service { 'nginx':
+    ensure    => running,
+    enable    => true,
+    subscribe => File['/etc/nginx/nginx.conf'], # Ensure service restarts if the config file changes
+  }
+}
+
+//
+
+

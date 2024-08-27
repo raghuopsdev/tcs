@@ -2,7 +2,7 @@ Custom Facts,
 
 	What is Fact ?
 
-		In Puppet, a "fact" is a piece of information about a system or node that Puppet uses to make decisions during the 			configuration process.
+		In Puppet, a "fact" is a piece of information about a system or node that Puppet uses to make decisions during the configuration process.
 
 	What is Custom Facts ?
 
@@ -85,7 +85,7 @@ Invocation on Client
 Mcollective
 
 		"Marionette Collective"
-		It is a framework that facilitates orchestration and management of distributed systems. It allows administrators to 		execute commands, gather information, and manage multiple servers from a central location. Originally developed by 		Puppet Labs
+		It is a framework that facilitates orchestration and management of distributed systems. It allows administrators to execute commands, gather information, and 				manage multiple servers from a central location. Originally developed by Puppet Labs
 
 
 		Mcollective with Puppet
@@ -99,12 +99,14 @@ Mcollective
 
 //TODO
 
-Mcollective Client and Server Configuration, 
 Data Caching, 
 Processing Hooks, 
-Agent Configuration and Activation
+
+
 
 // RSec-Puppet
 // PDK Demonstration
 // Creating the functions (We only executed)
+//how to validate data types and write rspec example step by step
+
 

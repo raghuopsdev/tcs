@@ -1,0 +1,16 @@
+Data caching
+
+Overview of Data Caching in Puppet
+
+
+Facts Caching:
+
+	Custom Facts: Facts are collected by Puppet from each node and can be cached to avoid re-computation.
+	Facter Cache: The Facter library, which Puppet uses to gather facts, can cache facts to speed up the process.
+
+External Data Sources:
+
+	Hiera: Puppet’s hierarchical data lookup tool, Hiera, can cache data retrieved from external sources like YAML files, 	databases, or other backends.
+	
+Catalogs:
+	Cached Catalogs: Puppet can cache compiled catalogs on the Puppet master and agent to avoid regenerating them for each agent run.

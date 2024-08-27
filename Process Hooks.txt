@@ -1,0 +1,57 @@
+Process Hooks
+
+
+	Custom code:
+
+
+		Before or After the puppet master compile a catlog.
+			Pre-Run hooks
+				small shell script
+
+				/etc/puppet/pre_run_hook.sh
+
+				#!/bin/bash
+				echo "Running pre-run hook..."
+				# Add custom logic here
+
+				chmod +x /etc/puppet/pre_run_hook.sh
+
+
+			Post-Run Hooks
+			
+				/etc/...../post_run_hook.sh
+				
+
+			Custom hooks
+
+
+			-> modules/custom_hooks/manifests/init.pp
+
+				class custom_hooks {
+  					exec { 'run_pre_hook':
+    						command => '/etc/puppet/pre_run_hook.sh',
+    						path    => ['/bin', '/usr/bin'],
+   					        before  => Exec['apply_puppet'],
+  					}
+
+  					exec { 'apply_puppet':
+    						command => 'puppet apply /etc/puppet/code/environments/production/manifests/site.pp',
+    						path    => ['/bin', '/usr/bin'],
+    						notify  => Exec['run_post_hook'],
+  						}
+
+  					exec { 'run_post_hook':
+    						command => '/etc/puppet/post_run_hook.sh',
+    						path    => ['/bin', '/usr/bin'],
+  						}
+				}
+
+	module/manifests/Site.pp -----> node 'default' { include custom_hooks }
+
+			
+		Integration with various tools
+		Modify or extend the default behaviour of Puppet.
+
+
+	
+		

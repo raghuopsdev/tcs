@@ -1,0 +1,90 @@
+Introduction to r10k 
+
+
+Introduction: Tool for automating deployment of puppet code from version control repos (git).
+
+		Pulling the code from Git repositories.
+		And deploying it to the Puppet Master.
+
+
+gem install r10k
+r10k version
+
+
+
+//Location of the main config file, may vary based on OS version
+## /etc/puppet/r10k/r10k.yaml
+
+# Sample R10k configuration file
+
+# The source of Puppet code repositories
+sources:
+  my_source:
+    remote: 'https://github.com/raghuopsdev/tcs.git'
+    basedir: '/etc/puppet/code/environments'
+    branch: 'main'  # or 'master' or any other branch
+   # prefix: 'myorg'
+
+//To deploy entire environment
+r10k deploy environment -p
+
+//Deploy on the module
+r10k deploy module -p
+
+//Testing R10K configuration
+r10k puppetfile install
+
+
+//Sample puppet file
+forge 'https://forge.puppet.com'
+mod 'puppetlabs/stdlib', '6.0.0'
+mod 'puppetlabs/apache', '6.0.0'
+
+
+//multiple branches and multiple environments
+sources:
+  my_source:
+    remote: 'https://github.com/your_org/your_puppet_repo.git'
+
+   //not recommended
+   //   remote: 'https://username:password@github.com/your_org/your_repo.git'
+
+   
+   //git config --global credential.helper store
+   
+   //git clone https://github.com/your_org/your_repo.git
+
+
+   //Puppet Master Create SSH key
+   //ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+   //Public key 
+   // cat ~/.ssh/id_rsa.pub
+   //Add SSH key to githhub repository.
+
+   //export GIT_USERNAME='your_username'
+   //export GIT_PASSWORD='your_password'
+
+    basedir: '/etc/puppet/code/environments'
+    branch: 'main'
+    environment:
+      production:
+        branch: 'production'
+      development:
+        branch: 'development'
+
+
+//Logs
+
+Review logs for errors (/var/log/puppetlabs/).
+Ensure the r10k.yaml file is correctly formatted and paths are accurate.
+
+
+//Description
+
+r10k.yaml: Configures how R10k fetches and deploys Puppet environments and modules. It defines repository sources and deployment paths.
+Puppetfile: Lists and manages the Puppet modules and their versions, allowing R10k to resolve and install these modules when deploying environments.
+
+
+
+
+

@@ -1,0 +1,6 @@
+Introduction to r10k 
+Puppet Files and Labs
+R10k Command Reference
+Scalable Puppet Architecture
+Foreman and Puppet Together
+ActiveMQ Architecture
