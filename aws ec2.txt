@@ -1,0 +1,52 @@
+
+
+
+AWS - IAM - > Create User (tcs, generate access key & your secret key)
+
+
+$
+
+export AWS_ACCESS_KEY_ID='your_access_key_id'
+export AWS_SECRET_ACCESS_KEY='your_secret_access_key'
+
+OR
+
+~/.aws/credentials
+[default]
+aws_access_key_id = your_access_key_id
+aws_secret_access_key = your_secret_access_key
+
+
+
+WRITE THE FOLLOWING MANIFESTO
+
+================================================================
+
+puppet module install puppetlabs-aws
+
+
+=================================================================
+
+
+
+# Configure AWS provider
+aws_resource { 'aws':
+  region = 'ap-south-1', # Replace with your desired region
+}
+
+# Define the EC2 instance
+ec2_instance { 'my-instance':
+  ensure               => 'present',
+  instance_type        => 't2.micro', # Choose the instance type
+  image_id             => 'ami-0abcdef1234567890', # Replace with your desired AMI ID
+  key_name             => 'my-key-pair', # Replace with your key pair name
+  security_groups      => ['default'], # Replace with your security group
+  subnet_id            => 'subnet-12345678', # Replace with your subnet ID
+  availability_zone    => 'ap-south-1a', # Replace with your availability zone
+  associate_public_ip  => true, # Associate a public IP address
+  tags                 => {
+    'Name' => 'MyPuppetInstance',
+  },
+}
+
+=======================================================================

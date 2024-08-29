@@ -1,6 +1,57 @@
 Introduction to r10k 
 Puppet Files and Labs
 R10k Command Reference
+
+// TO Do
+
+
 Scalable Puppet Architecture
 Foreman and Puppet Together
 ActiveMQ Architecture
+
+
+
+8-28 Topics
+
+
+
+Puppet Manifest
+//Registry
+
+node 'windows_node' {
+  # Ensure a registry key exists
+  registry_key { 'HKLM\SOFTWARE\MyCompany':
+    ensure => present,
+  }
+
+  # Ensure a registry value exists and is set
+  registry_value { 'HKLM\SOFTWARE\MyCompany\MySetting':
+    ensure  => present,
+    type    => string,
+    data    => 'MyValue',
+  }
+
+  # Ensure a registry value is deleted
+  registry_value { 'HKLM\SOFTWARE\MyCompany\OldSetting':
+    ensure  => absent,
+  }
+
+  # Ensure a registry key is deleted (and all its subkeys and values)
+  registry_key { 'HKLM\SOFTWARE\MyCompany\OldKey':
+    ensure => absent,
+  }
+}
+
+
+
+
+
+TODO tomorrow
+================
+NTP
+firewalls
+services
+Apache
+tomcat
+OS Patching
+

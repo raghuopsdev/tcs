@@ -1,0 +1,11 @@
+Set up a virtual box (DNS Name: puppetserver.edureka.demo) with Ubuntu 22.04. 
+
+If required, set up a DNS server to serve up names for domain edureka.demo with websrv01.edureka.demo, websrv02.edureka.demo, testwebserver01.edureka.co, mysqlserver01.webdemo.com
+
+Create roles/profiles so that websrv01, webserv02 and mysqlserver01 belong to production environment and testwebserv01.edureka.com to QA/DEV.  
+
+For simplicity all servers are on Ubuntu 14.04
+
+Build the application from following github repos: https://github.com/seshagirisriram/game-of-lifeas a maven build using Jenkins On success, use puppet to provision WAR file to testwebserver01.edureka.demo. 
+
+On successful provision of same and QA Appoval of same, the same WAR Should be provisioned to websrv01 and websrv02 on Tomcat 7

@@ -1,0 +1,104 @@
+Node Classifier
+
+
+Puppet Master Node Classifier (PE)
+
+Hiera
+
+Manual
+
+ENC
+
+
+
+
+
+Hiera
+
+
+(nodes.yaml)
+
+
+---
+node1.example.com:
+  classes:
+    - webserver
+    - mysql
+
+node2.example.com:
+  classes:
+    - appserver
+
+
+(hiera.yaml)
+
+---
+version: 5
+hierarchy:
+  - name: 'Node classification'
+    path: 'nodes.yaml'
+  - name: 'Common'
+    path: 'common.yaml'
+
+
+
+(xyz.pp)
+
+
+$classes = hiera('classes', [])
+include $classes
+
+=========================================================
+
+
+Manual Classification in Manifests
+
+
+node 'webserver1.example.com' {
+  include webserver
+}
+
+node 'dbserver1.example.com' {
+  include database
+}
+
+node default {
+  include common
+}
+
+
+
+===============================================================
+
+ENC
+
+
+# enc.rb
+require 'json'
+
+data = {
+  'classes' => ['webserver'],
+  'parameters' => {
+    'server_name' => 'webserver1'
+  }
+}
+
+puts data.to_json
+
+
+puppet.conf
+
+[main]
+node_terminus = exec
+external_nodes = /path/to/enc.rb
+
+
+
+
+
+
+
+
+
+
+

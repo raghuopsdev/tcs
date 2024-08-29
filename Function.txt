@@ -1,0 +1,99 @@
+Function
+
+
+lib/puppet/functions
+
+
+
+
+tcsmodule/
+├── lib/
+│   └── puppet/
+│       └── functions/
+│           └── yourfunction.pp
+└── manifests/
+    └── init.pp
+
+
+
+Puppet::Functions.create_function(:'tcsmodule::add_numbers') do
+  # Define the function
+  dispatch :add do
+    # Define the input parameters
+    param 'Integer', :a
+    param 'Integer', :b
+    # Define the return type
+    return_type 'Integer'
+  end
+
+  # Implement the function logic
+  def add(a, b)
+    a + b
+  end
+end
+
+
+Manifesto
+----------------------------------
+
+# Example of using the custom function
+class example {
+  $result = tcsmodule::add_numbers(5, 10)
+
+  notify { "The result is ${result}":
+  }
+}
+
+
+
+puppet apply /path/to/your/manifest.pp
+
+
+
+ON AGENT IT WILL BE
+=======================
+
+Notice: /Stage[main]/Example/Notify[The result is 15]/message: The result is 15
+
+
+=====================
+
+API Function
+
+========================
+
+
+
+require 'net/http'
+require 'uri'
+
+Puppet::Functions.create_function(:'apitester::test_api') do
+  # Define the function
+  dispatch :test do
+    param 'String', :url
+    return_type 'String'
+  end
+
+  # Implement the function logic
+  def test(url)
+    uri = URI.parse(url)
+    response = Net::HTTP.get_response(uri)
+    
+    if response.is_a?(Net::HTTPSuccess)
+      "Success: #{response.code} #{response.message}"
+    else
+      "Failure: #{response.code} #{response.message}"
+    end
+  rescue StandardError => e
+    "Error: #{e.message}"
+  end
+end
+
+
+
+
+
+
+
+
+

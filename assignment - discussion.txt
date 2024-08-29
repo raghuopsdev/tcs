@@ -1,0 +1,142 @@
+assignment - discussion
+
+Directory Structure
+===================
+
+site
+├── profiles
+│   ├── init.pp
+│   ├── web_server.pp
+│   ├── mysql_server.pp
+│   ├── production.pp
+│   └── qa_dev.pp
+├── roles
+│   ├── init.pp
+│   ├── production_web_server.pp
+│   └── qa_dev_web_server.pp
+└── nodes.pp
+
+
+DEFINE PROFILES (Profiles are reusable classes that define specific configurations for different types of systems)
+================================
+
+site/profiles/init.pp
+
+	# No specific content here, serves as the entry point
+
+site/profiles/web_server.pp
+
+	class profiles::web_server {
+  	# Ensure Apache or Nginx is installed
+  	package { 'httpd':
+  	  ensure => installed,
+ 	  }
+
+ 	 service { 'httpd':
+  	  ensure    => running,
+   	  enable    => true,
+  	  subscribe => Package['httpd'],
+ 	  }
+
+ 	 # Configure the web server (example configuration)
+  	 file { '/etc/httpd/conf.d/website.conf':
+  	  ensure  => file,
+   	  content => "
+    	   <VirtualHost *:80>
+     	   ServerName www.example.com
+     	   DocumentRoot /var/www/html
+     	   </VirtualHost>
+   	   ",
+   	  notify  => Service['httpd'],
+  	 }
+        }
+
+
+site/profiles/mysql_server.pp
+
+class profiles::mysql_server {
+  # Ensure MySQL is installed
+  package { 'mysql-server':
+    ensure => installed,
+  }
+
+  service { 'mysqld':
+    ensure    => running,
+    enable    => true,
+    subscribe => Package['mysql-server'],
+  }
+
+  # Example MySQL configuration
+  file { '/etc/my.cnf':
+    ensure  => file,
+    content => "
+      [mysqld]
+      bind-address = 0.0.0.0
+    ",
+    notify  => Service['mysqld'],
+  }
+}
+
+
+site/profiles/production.pp
+
+class profiles::production {
+  include profiles::web_server
+  include profiles::mysql_server
+}
+
+
+site/profiles/qa_dev.pp
+
+
+class profiles::qa_dev {
+  include profiles::web_server
+}
+
+
+DEFINE ROLES (Roles combine profiles to create specific configurations for different environments or purposes)
+===============================================================================================================
+
+
+site/roles/init.pp
+
+# No specific content here, serves as the entry point
+
+
+
+site/roles/production_web_server.pp
+
+class roles::production_web_server {
+  include profiles::production
+}
+
+
+
+site/roles/qa_dev_web_server.pp
+
+class roles::qa_dev_web_server {
+  include profiles::qa_dev
+}
+
+
+
+Assign Nodes to Roles (In your nodes.pp, you will assign the roles to specific nodes)
+=======================================================================================
+
+site/nodes.pp
+
+
+node 'websrv01', 'websrv02', 'mysqlserver01' {
+  include roles::production_web_server
+}
+
+node 'testwebserv01.edureka.com' {
+  include roles::qa_dev_web_server
+}
+
+
+
+
+
+
+

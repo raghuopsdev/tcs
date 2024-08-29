@@ -1,0 +1,195 @@
+To set up a Jenkins pipeline that builds a Maven application from a GitHub repository, and then uses Puppet to deploy the resulting WAR file to a test server, follow these steps:
+
+1. Jenkins Pipeline Setup
+1.1. Install Jenkins and Required Plugins
+Install Jenkins: Ensure Jenkins is installed and running.
+Install Plugins: Install necessary plugins:
+Git Plugin: For cloning the GitHub repository.
+Pipeline Plugin: For creating pipeline jobs.
+Maven Integration Plugin: For building Maven projects.
+1.2. Create a Jenkins Pipeline Job
+Open Jenkins: Go to your Jenkins dashboard.
+
+Create a New Job: Click on “New Item”, select “Pipeline”, and name it (e.g., Build-and-Deploy-Game-of-Life).
+
+Configure Pipeline:
+
+Pipeline Script: Choose “Pipeline script” and add the following script:
+
+==========================================================================
+
+pipeline {
+    agent any
+    
+    environment {
+        MAVEN_HOME = tool name: 'Maven 3', type: 'maven'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clone the GitHub repository
+                git 'https://github.com/seshagirisriram/game-of-life.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the Maven project
+                sh "'${MAVEN_HOME}/bin/mvn' clean package"
+            }
+        }
+        
+        stage('Archive WAR') {
+            steps {
+                // Archive the WAR file as an artifact
+                archiveArtifacts artifacts: '**/target/*.war', allowEmptyArchive: true
+            }
+        }
+        
+        stage('Deploy to QA') {
+            steps {
+                script {
+                    def warFile = sh(returnStdout: true, script: "ls target/*.war").trim()
+                    sh "scp ${warFile} user@testwebserver01.edureka.demo:/path/to/deploy"
+                }
+            }
+        }
+
+        stage('QA Approval') {
+            steps {
+                input message: 'Approve Deployment to Production?', ok: 'Deploy to Production'
+            }
+        }
+        
+        stage('Deploy to Production') {
+            steps {
+                script {
+                    def warFile = sh(returnStdout: true, script: "ls target/*.war").trim()
+                    sh "scp ${warFile} user@websrv01.edureka.demo:/path/to/deploy"
+                    sh "scp ${warFile} user@websrv02.edureka.demo:/path/to/deploy"
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Build and deployment successful'
+        }
+        failure {
+            echo 'Build or deployment failed'
+        }
+    }
+}
+
+==========================================================================
+
+
+Note: 	Replace user@testwebserver01.edureka.demo with the actual SSH user and hostname, and /path/to/deploy with the actual path where the WAR file should be deployed.
+	Adjust /path/to/deploy to the path where the WAR file should be deployed.
+
+
+Puppet Configuration for Deployment
+Once Jenkins successfully builds and archives the WAR file, Puppet can be used to deploy the WAR file to the testwebserver01.edureka.demo server.
+
+
+Puppet Profile for Deployment
+Create a Puppet profile to handle the deployment of the WAR file.
+
+
+site
+├── profiles
+│   ├── init.pp
+│   ├── web_server.pp
+│   ├── deploy_app.pp
+└── nodes.pp
+
+
+
+site/profiles/deploy_app.pp
+
+
+class profiles::deploy_app {
+  # Path to deploy the WAR file
+  $war_file_path = '/path/to/deploy/game-of-life.war'
+
+  # Ensure the deployment directory exists
+  file { '/path/to/deploy':
+    ensure => directory,
+  }
+
+  # Deploy the WAR file (assuming it's transferred manually or by Jenkins)
+  file { $war_file_path:
+    ensure  => file,
+    source  => "puppet:///modules/deploy_app/game-of-life.war",
+    notify  => Service['tomcat'],
+  }
+
+  # Example Tomcat service management
+  service { 'tomcat':
+    ensure    => running,
+    enable    => true,
+    subscribe => File[$war_file_path],
+  }
+}
+
+
+MAKE SURE add etc line to call this profile.
+
+site/roles/production_web_servers.pp
+
+
+class roles::production_web_server {
+  include profiles::production
+}
+
+
+
+site/nodes.pp
+
+
+node 'websrv01.edureka.demo', 'websrv02.edureka.demo' {
+  include roles::production_web_servers
+}
+
+node 'testwebserver01.edureka.demo' {
+  include profiles::deploy_app
+}
+
+
+
+
+Note: Ensure that the WAR file is available on the Puppet master in the modules/deploy_app/files directory.
+
+
+puppet
+└── modules
+    └── deploy_app
+        └── files
+            └── game-of-life.war
+
+
+
+Transfer WAR File from Jenkins to Puppet Server
+You need to ensure that the WAR file is accessible by Puppet. Here are a few options:
+
+Direct Transfer: Use SCP or another method to transfer the WAR file directly from Jenkins to the Puppet server.
+Manual Upload: Upload the WAR file manually to the Puppet server’s module directory.
+
+
+
+Testing and Validation
+Run Jenkins Job: Trigger the Jenkins job to build the application and deploy the WAR file.
+Verify Deployment: Check that the WAR file is correctly deployed to testwebserver01.edureka.demo and the application is running.
+
+
+
+Summary
+
+Jenkins Pipeline: Set up a Jenkins pipeline to clone the GitHub repository, build the Maven project, archive the WAR file, and deploy it to the test server.
+Puppet Deployment: Create a Puppet profile to manage the deployment of the WAR file on the test server, ensuring the file is placed in the correct location and the application server is managed.
+This setup integrates Jenkins for continuous integration and Puppet for configuration management, automating the build and deployment process efficiently.
+
+
+

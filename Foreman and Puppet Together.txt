@@ -1,0 +1,53 @@
+Foreman and Puppet Together
+
+Foreman: Acts as a complete lifecycle management tool. 
+
+It provides a web-based UI for managing your infrastructure, including provisioning, configuration, and monitoring. 
+
+Foreman can manage various aspects of your systems beyond just configuration, such as provisioning new servers, managing operating systems, and tracking system changes.
+
+
+Centralized Mgmt:
+	Foreman offers a centralized interface for managing Puppet nodes and their configurations.
+
+Node Classification:
+	Foreman can dynamically classify nodes, applying Puppet classes based on host parameters, groups, or environments.
+
+Provisioning:
+	Foreman can provision new systems and automatically configure them using Puppet.
+
+
+Reporting:
+	Foreman collects and displays reports from Puppet, providing insights into the state of your infrastructure.
+
+
+INTEGRATION WITH PUPPET MASTER
+
+
+Puppet Integration: In Foreman, go to the Puppet section and configure the Puppet master URL so that Foreman can communicate with Puppet.
+Puppet Classes: Import Puppet classes into Foreman. This can be done through the Foreman UI by navigating to Configure > Puppet Classes and importing classes from your Puppet environment.
+
+
+Configure Puppet Nodes in Foreman:
+
+
+Create Hosts: In Foreman, add your Puppet nodes as hosts. Define parameters, classes, and groups for each host or use host groups to manage multiple nodes.
+Host Groups: Use host groups to apply a set of Puppet classes and parameters to multiple hosts, simplifying management.
+
+Provisioning:
+
+Templates: Foreman uses templates (such as provisioning templates) to configure how new systems are installed and initialized.
+Puppet Modules: Define Puppet modules and classes that should be applied during provisioning.
+
+
+Reports/Monitoring:
+
+
+Reports: View Puppet reports in the Foreman UI to monitor the state of your nodes and configuration compliance.
+Dashboard: Use Foreman’s dashboard to get an overview of your infrastructure, including system status and Puppet-related information.
+
+
+
+
+
+

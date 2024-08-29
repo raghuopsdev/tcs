@@ -1,0 +1,43 @@
+Scalable Puppet Architecture
+
+
+Key Components:
+
+PuppetMaster
+PuppetAgent
+PubbetDB (Optional)
+Foreman
+PuppetConsole
+MCollective
+
+
+ScalingUp PuppetMaster
+
+	Use a load balancer to distribute incoming requests to different Puppet Master instances.
+
+		Agent
+
+		server = lb.puppetmaster.com
+
+		LB
+
+		  8140 puppet1.com
+		  8140 puppet2.com
+
+		
+
+PuppetDB
+
+	Configure PuppetDB with sharding to handle large datasets. 
+	Distribute data storage and query load across multiple PuppetDB instances.
+
+
+	
+
+  A scalable Puppet architecture involves:
+
+	1) Multiple Puppet Masters: Load-balanced for high availability and performance.
+	2) PuppetDB: Configured for high performance and scalability.
+	3) Hiera: Organized for efficient data lookup.
+	4) Monitoring and Management: Ensuring system performance and reliability.
+
